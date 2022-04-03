@@ -43,6 +43,14 @@ func (v Vector) Dot(v2 Vector) float64 {
 	return v.X*v2.X + v.Y*v2.Y + v.Z*v2.Z
 }
 
+func (v Vector) Cross(v2 Vector) Vector {
+	return Vector{
+		v.Y*v2.Z - v.Z*v2.Y,
+		v.Z*v2.X - v.X*v2.Z,
+		v.X*v2.Y - v.Y*v2.X,
+	}
+}
+
 func (v Vector) NearZero() bool {
 	const s = 1e-8
 	return (math.Abs(v.X) < s) && (math.Abs(v.Y) < s) && (math.Abs(v.Z) < s)
