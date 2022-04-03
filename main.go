@@ -48,8 +48,10 @@ func main() {
 	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, -0.45, materialLeft})
 	world = append(world, Sphere{Point{1.0, 0.0, -1.0}, 0.5, materialRight})
 
-	camera := NewCamera(Point{-2, 2, 1}, Point{0, 0, -1}, Vector{0, 1, 0},
-		20, aspectRatio)
+	lookFrom := Point{3, 3, 2}
+	lookAt := Point{0, 0, -1}
+	camera := NewCamera(lookFrom, lookAt, Vector{0, 1, 0},
+		20, aspectRatio, 2, (lookFrom.SubPoint(lookAt).Len()))
 
 	img := image.NewNRGBA(image.Rect(0, 0, imageWidth, imageHeight))
 	bar := progressbar.Default(int64(imageHeight))

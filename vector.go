@@ -71,6 +71,15 @@ func RandomVector() Vector {
 	return Vector{Random(-1, 1), Random(-1, 1), Random(-1, 1)}
 }
 
+func RandomUnitDiscVector() Vector {
+	for {
+		v := Vector{Random(-1, 1), Random(-1, 1), 0}
+		if v.LenSq() < 1 {
+			return v
+		}
+	}
+}
+
 func RandomUnitSphereVector() Vector {
 	for {
 		v := RandomVector()
