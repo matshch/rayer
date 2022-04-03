@@ -1,5 +1,7 @@
 package main
 
+import "math"
+
 type Camera struct {
 	origin          Point
 	horizontal      Vector
@@ -7,8 +9,16 @@ type Camera struct {
 	lowerLeftCorner Point
 }
 
-func NewCamera(aspectRatio float64) Camera {
-	const viewportHeight = 2.
+type Degrees float64
+
+func (d Degrees) Radians() float64 {
+	return float64(d) * math.Pi / 180
+}
+
+func NewCamera(vFOV Degrees, aspectRatio float64) Camera {
+	theta := vFOV.Radians()
+	h := math.Tan(theta / 2)
+	viewportHeight := 2 * h
 	viewportWidth := aspectRatio * viewportHeight
 	const focalLength = 1
 	var c Camera
