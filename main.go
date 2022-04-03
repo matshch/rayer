@@ -39,7 +39,7 @@ func main() {
 
 	var world []Hitter
 	materialGround := Lambertian{Color{R: 0.8, G: 0.8, B: 0.0}}
-	materialCenter := Dielectric{1.5}
+	materialCenter := Lambertian{Color{R: 0.1, G: 0.2, B: 0.5}}
 	materialLeft := Dielectric{1.5}
 	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}, 1.0}
 	world = append(world, Sphere{Point{0.0, -100.5, -1.0}, 100.0, materialGround})
