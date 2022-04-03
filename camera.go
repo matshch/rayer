@@ -1,11 +1,6 @@
 package main
 
 type Camera struct {
-	aspectRatio    float64
-	viewportHeight float64
-	viewportWidth  float64
-	focalLength    float64
-
 	origin          Point
 	horizontal      Vector
 	vertical        Vector
@@ -13,13 +8,15 @@ type Camera struct {
 }
 
 func NewCamera(aspectRatio float64) Camera {
-	c := Camera{aspectRatio: aspectRatio, viewportHeight: 2., focalLength: 1}
-	c.viewportWidth = c.aspectRatio * c.viewportHeight
-	c.horizontal.X = c.viewportWidth
-	c.vertical.Y = c.viewportHeight
+	const viewportHeight = 2.
+	viewportWidth := aspectRatio * viewportHeight
+	const focalLength = 1
+	var c Camera
+	c.horizontal.X = viewportWidth
+	c.vertical.Y = viewportHeight
 	c.lowerLeftCorner = c.origin.SubVector(c.horizontal.Scale(0.5)).
 		SubVector(c.vertical.Scale(0.5)).
-		SubVector(Vector{Z: c.focalLength})
+		SubVector(Vector{Z: focalLength})
 	return c
 }
 
