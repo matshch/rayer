@@ -35,16 +35,7 @@ func main() {
 	world = append(world, Sphere{Point{0, 0, -1}, 0.5})
 	world = append(world, Sphere{Point{0, -100.5, -1}, 100})
 
-	const viewportHeight = 2
-	const viewportWidth = 2 * aspectRatio
-	const focalLength = 1.
-
-	origin := Point{}
-	horizontal := Vector{viewportWidth, 0, 0}
-	vertical := Vector{0, viewportHeight, 0}
-	lowerLeftCorner := origin.SubVector(horizontal.Scale(0.5)).
-		SubVector(vertical.Scale(0.5)).
-		SubVector(Vector{0, 0, focalLength})
+	camera := NewCamera(aspectRatio)
 
 	img := image.NewNRGBA(image.Rect(0, 0, imageWidth, imageHeight))
 	bar := progressbar.Default(int64(imageHeight))
@@ -52,7 +43,7 @@ func main() {
 		for i := 0; i < imageWidth; i++ {
 			u := float64(i) / (imageWidth - 1)
 			v := float64(j) / float64(imageHeight-1)
-			ray := Ray{origin, lowerLeftCorner.Add(horizontal.Scale(u)).Add(vertical.Scale(v)).SubPoint(origin)}
+			ray := camera.Ray(u, v)
 			img.Set(i, imageHeight-j-1, rayColor(ray, HitterSlice(world)).NRGBA())
 		}
 		bar.Add(1)
