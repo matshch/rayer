@@ -13,5 +13,13 @@ func (p Point) String() string {
 }
 
 func (p Point) Add(v Vector) Point {
-	return Point{X: p.X + v.X, Y: p.Y + v.Y, Z: p.Z + v.Z}
+	return Point{p.X + v.X, p.Y + v.Y, p.Z + v.Z}
+}
+
+func (p Point) SubVector(v Vector) Point {
+	return Point{p.X - v.X, p.Y - v.Y, p.Z - v.Z}
+}
+
+func (p Point) SubPoint(p2 Point) Vector {
+	return Vector{p.X - p2.X, p.Y - p2.Y, p.Z - p2.Z}
 }

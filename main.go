@@ -4,28 +4,44 @@ import (
 	"image"
 	"image/png"
 	"log"
+	"math"
 	"os"
 
 	"github.com/schollz/progressbar/v3"
 )
 
+func rayColor(r Ray) Color {
+	unit := r.Direction.Unit()
+	t := 0.5 * (unit.Y + 1.0)
+	return Color{1, 1, 1}.Blend(t, Color{0.5, 0.7, 1})
+}
+
 func main() {
 	log.Print("Starting rendering...")
 
-	const image_width = 256
-	const image_height = 256
+	const aspectRatio = 16. / 9.
+	const imageWidth = 400
+	imageHeight := int(math.Round(imageWidth / aspectRatio))
 
-	img := image.NewNRGBA(image.Rect(0, 0, image_width, image_height))
-	bar := progressbar.Default(image_height)
-	for j := 0; j < image_height; j++ {
-		for i := 0; i < image_width; i++ {
-			c := Color{
-				R: float64(i) / (image_width - 1),
-				G: float64(j) / (image_height - 1),
-				B: 0.25,
-			}
+	const viewportHeight = 2
+	const viewportWidth = 2 * aspectRatio
+	const focalLength = 1.
 
-			img.Set(i, image_height-j-1, c.NRGBA())
+	origin := Point{}
+	horizontal := Vector{viewportWidth, 0, 0}
+	vertical := Vector{0, viewportHeight, 0}
+	lowerLeftCorner := origin.SubVector(horizontal.Scale(0.5)).
+		SubVector(vertical.Scale(0.5)).
+		SubVector(Vector{0, 0, focalLength})
+
+	img := image.NewNRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+	bar := progressbar.Default(int64(imageHeight))
+	for j := 0; j < imageHeight; j++ {
+		for i := 0; i < imageWidth; i++ {
+			u := float64(i) / (imageWidth - 1)
+			v := float64(j) / float64(imageHeight-1)
+			ray := Ray{origin, lowerLeftCorner.Add(horizontal.Scale(u)).Add(vertical.Scale(v)).SubPoint(origin)}
+			img.Set(i, imageHeight-j-1, rayColor(ray).NRGBA())
 		}
 		bar.Add(1)
 	}
