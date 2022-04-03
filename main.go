@@ -14,7 +14,6 @@ import (
 func main() {
 	const image_width = 256
 	const image_height = 256
-	const max_value = 255
 
 	img := image.NewNRGBA(image.Rect(0, 0, image_width, image_height))
 	bar := progressbar.Default(image_height)
@@ -24,13 +23,10 @@ func main() {
 			g := float64(j) / (image_height - 1)
 			const b = 0.25
 
-			ir := uint8(math.Round(max_value * r))
-			ig := uint8(math.Round(max_value * g))
-			ib := uint8(math.Round(max_value * b))
 			img.Set(i, image_height - j - 1, color.NRGBA{
-				R: ir,
-				G: ig,
-				B: ib,
+				R: uint8(math.Round(math.MaxUint8 * r)),
+				G: uint8(math.Round(math.MaxUint8 * g)),
+				B: uint8(math.Round(math.MaxUint8 * b)),
 				A: 255,
 			})
 		}
