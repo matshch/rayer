@@ -38,7 +38,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := png.Encode(f, img); err != nil {
+	encoder := png.Encoder{CompressionLevel: png.BestCompression}
+	if err := encoder.Encode(f, img); err != nil {
 		f.Close()
 		log.Fatal(err)
 	}
