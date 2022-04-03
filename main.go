@@ -25,7 +25,7 @@ func main() {
 				B: 0.25,
 			}
 
-			img.Set(i, image_height - j - 1, c.NRGBA())
+			img.Set(i, image_height-j-1, c.NRGBA())
 		}
 		bar.Add(1)
 	}

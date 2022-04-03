@@ -12,7 +12,7 @@ type Color struct {
 	B float64
 }
 
-func (c Color) NRGBA() (color.NRGBA) {
+func (c Color) NRGBA() color.NRGBA {
 	r, g, b := c.Uint8()
 	return color.NRGBA{R: r, G: g, B: b, A: math.MaxUint8}
 }
