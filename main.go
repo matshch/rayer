@@ -40,8 +40,8 @@ func main() {
 	var world []Hitter
 	materialGround := Lambertian{Color{R: 0.8, G: 0.8, B: 0.0}}
 	materialCenter := Lambertian{Color{R: 0.7, G: 0.3, B: 0.3}}
-	materialLeft := Metal{Color{R: 0.8, G: 0.8, B: 0.8}}
-	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}}
+	materialLeft := Metal{Color{R: 0.8, G: 0.8, B: 0.8}, 0.3}
+	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}, 1.0}
 	world = append(world, Sphere{Point{0.0, -100.5, -1.0}, 100.0, materialGround})
 	world = append(world, Sphere{Point{0.0, 0.0, -1.0}, 0.5, materialCenter})
 	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, 0.5, materialLeft})
