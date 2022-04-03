@@ -7,6 +7,8 @@ import (
 	"log"
 	"math"
 	"os"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 func main() {
@@ -15,6 +17,7 @@ func main() {
 	const max_value = 255
 
 	img := image.NewNRGBA(image.Rect(0, 0, image_width, image_height))
+	bar := progressbar.Default(image_height)
 	for j := 0; j < image_height; j++ {
 		for i := 0; i < image_width; i++ {
 			r := float64(i) / (image_width - 1)
@@ -31,6 +34,7 @@ func main() {
 				A: 255,
 			})
 		}
+		bar.Add(1)
 	}
 
 	f, err := os.Create("rays.png")
