@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"math/rand"
 )
 
 const gamma = 2.2
@@ -14,6 +15,18 @@ type Color struct {
 	B float64
 
 	samples uint
+}
+
+func NewColor(r, g, b float64) Color {
+	return Color{R: r, G: g, B: b}
+}
+
+func RandomColor() Color {
+	return Color{R: rand.Float64(), G: rand.Float64(), B: rand.Float64()}
+}
+
+func RandomRangeColor(min, max float64) Color {
+	return Color{R: Random(min, max), G: Random(min, max), B: Random(min, max)}
 }
 
 func (c Color) NRGBA() color.NRGBA {

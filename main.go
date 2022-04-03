@@ -28,30 +28,61 @@ func rayColor(r Ray, world Hitter, depth uint) Color {
 	return Color{R: 1, G: 1, B: 1}.Blend(t, Color{R: 0.5, G: 0.7, B: 1})
 }
 
+func randomScene() []Hitter {
+	var world []Hitter
+	groundMaterial := Lambertian{NewColor(.5, .5, .5)}
+	world = append(world, Sphere{Point{0, -1000, 0}, 1000, groundMaterial})
+
+	for a := -11; a < 11; a++ {
+		for b := -11; b < 11; b++ {
+			materialChooser := rand.Float64()
+			center := Point{float64(a) + .9*rand.Float64(), .2, float64(b) + .9*rand.Float64()}
+
+			if (center.SubPoint(Point{4, .2, 0})).Len() > .9 {
+				if materialChooser < .8 {
+					albedo := RandomColor().Permute(RandomColor())
+					sphereMaterial := Lambertian{albedo}
+					world = append(world, Sphere{center, .2, sphereMaterial})
+				} else if materialChooser < .95 {
+					albedo := RandomRangeColor(.5, 1)
+					fuzz := Random(0, .5)
+					sphereMaterial := Metal{albedo, fuzz}
+					world = append(world, Sphere{center, .2, sphereMaterial})
+				} else {
+					sphereMaterial := Dielectric{1.5}
+					world = append(world, Sphere{center, .2, sphereMaterial})
+				}
+			}
+		}
+	}
+
+	material1 := Dielectric{1.5}
+	world = append(world, Sphere{Point{0, 1, 0}, 1, material1})
+
+	material2 := Lambertian{NewColor(.4, .2, .1)}
+	world = append(world, Sphere{Point{-4, 1, 0}, 1, material2})
+
+	material3 := Metal{NewColor(.7, .6, .5), 0}
+	world = append(world, Sphere{Point{4, 1, 0}, 1, material3})
+
+	return world
+}
+
 func main() {
 	log.Print("Starting rendering...")
 
-	const aspectRatio = 16. / 9.
-	const imageWidth = 400
+	const aspectRatio = 3. / 2.
+	const imageWidth = 1200
 	imageHeight := int(math.Round(imageWidth / aspectRatio))
-	const samplesPerPixel = 100
+	const samplesPerPixel = 500
 	const maxDepth = 50
 
-	var world []Hitter
-	materialGround := Lambertian{Color{R: 0.8, G: 0.8, B: 0.0}}
-	materialCenter := Lambertian{Color{R: 0.1, G: 0.2, B: 0.5}}
-	materialLeft := Dielectric{1.5}
-	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}, 0}
-	world = append(world, Sphere{Point{0.0, -100.5, -1.0}, 100.0, materialGround})
-	world = append(world, Sphere{Point{0.0, 0.0, -1.0}, 0.5, materialCenter})
-	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, 0.5, materialLeft})
-	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, -0.45, materialLeft})
-	world = append(world, Sphere{Point{1.0, 0.0, -1.0}, 0.5, materialRight})
+	world := randomScene()
 
-	lookFrom := Point{3, 3, 2}
-	lookAt := Point{0, 0, -1}
+	lookFrom := Point{13, 2, 3}
+	lookAt := Point{0, 0, 0}
 	camera := NewCamera(lookFrom, lookAt, Vector{0, 1, 0},
-		20, aspectRatio, 2, (lookFrom.SubPoint(lookAt).Len()))
+		20, aspectRatio, 0.1, 10)
 
 	img := image.NewNRGBA(image.Rect(0, 0, imageWidth, imageHeight))
 	bar := progressbar.Default(int64(imageHeight))
