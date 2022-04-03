@@ -12,14 +12,14 @@ import (
 
 func hitSphere(center Point, radius float64, r Ray) float64 {
 	oc := r.Origin.SubPoint(center)
-	a := r.Direction.Dot(r.Direction)
-	b := 2 * r.Direction.Dot(oc)
-	c := oc.Dot(oc) - radius*radius
-	d := b*b - 4*a*c
+	a := r.Direction.LenSq()
+	h := r.Direction.Dot(oc)
+	c := oc.LenSq() - radius*radius
+	d := h*h - a*c
 	if d < 0 {
 		return -1
 	}
-	return (-b - math.Sqrt(d)) / (2 * a)
+	return (-h - math.Sqrt(d)) / a
 }
 
 func rayColor(r Ray) Color {

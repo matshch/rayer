@@ -16,7 +16,11 @@ func (v Vector) String() string {
 }
 
 func (v Vector) Len() float64 {
-	return math.Sqrt(v.Dot(v))
+	return math.Sqrt(v.LenSq())
+}
+
+func (v Vector) LenSq() float64 {
+	return v.Dot(v)
 }
 
 func (v Vector) Scale(t float64) Vector {
