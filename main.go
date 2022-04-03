@@ -1,8 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"image"
+	"image/color"
+	"image/png"
+	"log"
 	"math"
+	"os"
 )
 
 func main() {
@@ -10,10 +14,8 @@ func main() {
 	const image_height = 256
 	const max_value = 255
 
-	fmt.Println("P3")
-	fmt.Println(image_width, image_height)
-	fmt.Println(max_value)
-	for j := image_height - 1; j > 0; j-- {
+	img := image.NewNRGBA(image.Rect(0, 0, image_width, image_height))
+	for j := 0; j < image_height; j++ {
 		for i := 0; i < image_width; i++ {
 			r := float64(i) / (image_width - 1)
 			g := float64(j) / (image_height - 1)
@@ -22,7 +24,26 @@ func main() {
 			ir := uint8(math.Round(max_value * r))
 			ig := uint8(math.Round(max_value * g))
 			ib := uint8(math.Round(max_value * b))
-			fmt.Println(ir, ig, ib)
+			img.Set(i, image_height - j - 1, color.NRGBA{
+				R: ir,
+				G: ig,
+				B: ib,
+				A: 255,
+			})
 		}
+	}
+
+	f, err := os.Create("rays.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := png.Encode(f, img); err != nil {
+		f.Close()
+		log.Fatal(err)
+	}
+
+	if err := f.Close(); err != nil {
+		log.Fatal(err)
 	}
 }
