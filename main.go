@@ -10,7 +10,19 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
+func hitSphere(center Point, radius float64, r Ray) bool {
+	oc := r.Origin.SubPoint(center)
+	a := r.Direction.Dot(r.Direction)
+	b := 2 * r.Direction.Dot(oc)
+	c := oc.Dot(oc) - radius*radius
+	d := b*b - 4*a*c
+	return d > 0
+}
+
 func rayColor(r Ray) Color {
+	if hitSphere(Point{0, 0, -1}, 0.5, r) {
+		return Color{1, 0, 0}
+	}
 	unit := r.Direction.Unit()
 	t := 0.5 * (unit.Y + 1.0)
 	return Color{1, 1, 1}.Blend(t, Color{0.5, 0.7, 1})

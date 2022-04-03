@@ -16,7 +16,7 @@ func (v Vector) String() string {
 }
 
 func (v Vector) Len() float64 {
-	return math.Sqrt(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
+	return math.Sqrt(v.Dot(v))
 }
 
 func (v Vector) Scale(t float64) Vector {
@@ -33,4 +33,8 @@ func (a Vector) Add(b Vector) Vector {
 
 func (a Vector) Sub(b Vector) Vector {
 	return Vector{a.X - b.X, a.Y - b.Y, a.Z - b.Z}
+}
+
+func (v Vector) Dot(v2 Vector) float64 {
+	return v.X*v2.X + v.Y*v2.Y + v.Z*v2.Z
 }
