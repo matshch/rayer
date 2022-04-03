@@ -43,6 +43,15 @@ func (v Vector) Dot(v2 Vector) float64 {
 	return v.X*v2.X + v.Y*v2.Y + v.Z*v2.Z
 }
 
+func (v Vector) NearZero() bool {
+	const s = 1e-8
+	return (math.Abs(v.X) < s) && (math.Abs(v.Y) < s) && (math.Abs(v.Z) < s)
+}
+
+func (v Vector) Reflect(n Vector) Vector {
+	return v.Sub(n.Scale(2 * v.Dot(n)))
+}
+
 func RandomVector() Vector {
 	return Vector{Random(-1, 1), Random(-1, 1), Random(-1, 1)}
 }

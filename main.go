@@ -17,8 +17,11 @@ func rayColor(r Ray, world Hitter, depth uint) Color {
 	}
 	hit := world.Hit(r, 0.001, math.Inf(1))
 	if hit != nil {
-		target := hit.Point.Add(hit.Normal).Add(RandomUnitVector())
-		return rayColor(Ray{hit.Point, target.SubPoint(hit.Point)}, world, depth-1).Scale(.5)
+		newRay, attenuation := hit.Material.Scatter(r, *hit)
+		if newRay != nil {
+			return attenuation.Permute(rayColor(*newRay, world, depth-1))
+		}
+		return Color{}
 	}
 	unit := r.Direction.Unit()
 	t := 0.5 * (unit.Y + 1.0)
@@ -35,8 +38,14 @@ func main() {
 	const maxDepth = 50
 
 	var world []Hitter
-	world = append(world, Sphere{Point{0, 0, -1}, 0.5})
-	world = append(world, Sphere{Point{0, -100.5, -1}, 100})
+	materialGround := Lambertian{Color{R: 0.8, G: 0.8, B: 0.0}}
+	materialCenter := Lambertian{Color{R: 0.7, G: 0.3, B: 0.3}}
+	materialLeft := Metal{Color{R: 0.8, G: 0.8, B: 0.8}}
+	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}}
+	world = append(world, Sphere{Point{0.0, -100.5, -1.0}, 100.0, materialGround})
+	world = append(world, Sphere{Point{0.0, 0.0, -1.0}, 0.5, materialCenter})
+	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, 0.5, materialLeft})
+	world = append(world, Sphere{Point{1.0, 0.0, -1.0}, 0.5, materialRight})
 
 	camera := NewCamera(aspectRatio)
 

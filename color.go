@@ -51,6 +51,15 @@ func (c *Color) LazyBlend(c2 Color) {
 	c.samples++
 }
 
+func (c Color) Permute(c2 Color) Color {
+	c.blended()
+	return Color{
+		R: c.R * c2.R,
+		G: c.G * c2.G,
+		B: c.B * c2.B,
+	}
+}
+
 func (c *Color) blended() {
 	if c.samples != 0 {
 		ratio := 1 / float64(c.samples)

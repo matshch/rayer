@@ -3,8 +3,9 @@ package main
 import "math"
 
 type Sphere struct {
-	Center Point
-	Radius float64
+	Center   Point
+	Radius   float64
+	Material Material
 }
 
 func (s Sphere) Hit(r Ray, tMin, tMax float64) *Hit {
@@ -25,7 +26,7 @@ func (s Sphere) Hit(r Ray, tMin, tMax float64) *Hit {
 		}
 	}
 	p := r.At(t)
-	hit := Hit{Point: p, T: t}
+	hit := Hit{Point: p, Material: s.Material, T: t}
 	hit.SetFrontNormal(r, p.SubPoint(s.Center).Scale(1/s.Radius))
 	return &hit
 }

@@ -1,10 +1,11 @@
 package main
 
 type Hit struct {
-	Point  Point
-	Normal Vector
-	T      float64
-	Front  bool
+	Point    Point
+	Normal   Vector
+	Material Material
+	T        float64
+	Front    bool
 }
 
 func (h *Hit) SetFrontNormal(r Ray, outwardNormal Vector) {
