@@ -41,15 +41,15 @@ func main() {
 	materialGround := Lambertian{Color{R: 0.8, G: 0.8, B: 0.0}}
 	materialCenter := Lambertian{Color{R: 0.1, G: 0.2, B: 0.5}}
 	materialLeft := Dielectric{1.5}
-	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}, 1.0}
+	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}, 0}
 	world = append(world, Sphere{Point{0.0, -100.5, -1.0}, 100.0, materialGround})
 	world = append(world, Sphere{Point{0.0, 0.0, -1.0}, 0.5, materialCenter})
 	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, 0.5, materialLeft})
-	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, -0.4, materialLeft})
+	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, -0.45, materialLeft})
 	world = append(world, Sphere{Point{1.0, 0.0, -1.0}, 0.5, materialRight})
 
-	camera := NewCamera(Point{-2, 2, 1}, Point{0, 0, -1},
-		Vector{0, 1, 0}, 90, aspectRatio)
+	camera := NewCamera(Point{-2, 2, 1}, Point{0, 0, -1}, Vector{0, 1, 0},
+		20, aspectRatio)
 
 	img := image.NewNRGBA(image.Rect(0, 0, imageWidth, imageHeight))
 	bar := progressbar.Default(int64(imageHeight))
