@@ -7,6 +7,7 @@ import (
 	"math"
 	"math/rand"
 	"os"
+	"sync"
 
 	"github.com/schollz/progressbar/v3"
 )
@@ -69,8 +70,7 @@ func randomScene() []Hitter {
 }
 
 func main() {
-	log.Print("Starting rendering...")
-
+	log.Print("Preparing scene...")
 	const aspectRatio = 3. / 2.
 	const imageWidth = 1200
 	imageHeight := int(math.Round(imageWidth / aspectRatio))
@@ -84,21 +84,28 @@ func main() {
 	camera := NewCamera(lookFrom, lookAt, Vector{0, 1, 0},
 		20, aspectRatio, 0.1, 10)
 
+	log.Print("Starting rendering...")
 	img := image.NewNRGBA(image.Rect(0, 0, imageWidth, imageHeight))
 	bar := progressbar.Default(int64(imageHeight))
+	var wg sync.WaitGroup
+	wg.Add(imageHeight)
 	for j := 0; j < imageHeight; j++ {
-		for i := 0; i < imageWidth; i++ {
-			var color Color
-			for s := 0; s < samplesPerPixel; s++ {
-				u := (float64(i) + rand.Float64()) / (imageWidth - 1)
-				v := (float64(j) + rand.Float64()) / float64(imageHeight-1)
-				ray := camera.Ray(u, v)
-				color.LazyBlend(rayColor(ray, HitterSlice(world), maxDepth))
+		go func(j int) {
+			defer wg.Done()
+			for i := 0; i < imageWidth; i++ {
+				var color Color
+				for s := 0; s < samplesPerPixel; s++ {
+					u := (float64(i) + rand.Float64()) / (imageWidth - 1)
+					v := (float64(j) + rand.Float64()) / float64(imageHeight-1)
+					ray := camera.Ray(u, v)
+					color.LazyBlend(rayColor(ray, HitterSlice(world), maxDepth))
+				}
+				img.Set(i, imageHeight-j-1, color.NRGBA())
 			}
-			img.Set(i, imageHeight-j-1, color.NRGBA())
-		}
-		bar.Add(1)
+			bar.Add(1)
+		}(j)
 	}
+	wg.Wait()
 
 	log.Print("Rendered, encoding and saving...")
 
