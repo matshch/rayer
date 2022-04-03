@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	log.Print("Starting rendering...")
+
 	const image_width = 256
 	const image_height = 256
 
@@ -33,6 +35,8 @@ func main() {
 		bar.Add(1)
 	}
 
+	log.Print("Rendered, encoding and saving...")
+
 	f, err := os.Create("rays.png")
 	if err != nil {
 		log.Fatal(err)
@@ -47,4 +51,6 @@ func main() {
 	if err := f.Close(); err != nil {
 		log.Fatal(err)
 	}
+
+	log.Print("Done!")
 }
