@@ -52,6 +52,13 @@ func (v Vector) Reflect(n Vector) Vector {
 	return v.Sub(n.Scale(2 * v.Dot(n)))
 }
 
+func (v Vector) Refract(n Vector, refractionRatio float64) Vector {
+	cosTheta := math.Min(v.Scale(-1).Dot(n), 1.)
+	rPerp := v.Add(n.Scale(cosTheta)).Scale(refractionRatio)
+	rPar := n.Scale(-math.Sqrt(math.Abs(1. - rPerp.LenSq())))
+	return rPerp.Add(rPar)
+}
+
 func RandomVector() Vector {
 	return Vector{Random(-1, 1), Random(-1, 1), Random(-1, 1)}
 }
