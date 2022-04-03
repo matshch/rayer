@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+const gamma = 2.2
+
 type Color struct {
 	R float64
 	G float64
@@ -22,9 +24,9 @@ func (c Color) NRGBA() color.NRGBA {
 
 func (c Color) Uint8() (uint8, uint8, uint8) {
 	c.blended()
-	return uint8(math.Round(math.MaxUint8 * c.R)),
-		uint8(math.Round(math.MaxUint8 * c.G)),
-		uint8(math.Round(math.MaxUint8 * c.B))
+	return uint8(math.Round(math.MaxUint8 * math.Pow(c.R, 1/gamma))),
+		uint8(math.Round(math.MaxUint8 * math.Pow(c.G, 1/gamma))),
+		uint8(math.Round(math.MaxUint8 * math.Pow(c.B, 1/gamma)))
 }
 
 func (c Color) String() string {
