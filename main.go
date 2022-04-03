@@ -10,27 +10,17 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-func hitSphere(center Point, radius float64, r Ray) float64 {
-	oc := r.Origin.SubPoint(center)
-	a := r.Direction.LenSq()
-	h := r.Direction.Dot(oc)
-	c := oc.LenSq() - radius*radius
-	d := h*h - a*c
-	if d < 0 {
-		return -1
-	}
-	return (-h - math.Sqrt(d)) / a
-}
-
-func rayColor(r Ray) Color {
-	sphereCenter := Point{0, 0, -1}
-	t := hitSphere(sphereCenter, 0.5, r)
-	if t > 0 {
-		n := r.At(t).SubPoint(sphereCenter).Unit()
-		return Color{.5*n.X + .5, .5*n.Y + .5, .5*n.Z + .5}
+func rayColor(r Ray, world Hitter) Color {
+	hit := world.Hit(r, 0, math.Inf(1))
+	if hit != nil {
+		return Color{
+			.5*hit.Normal.X + .5,
+			.5*hit.Normal.Y + .5,
+			.5*hit.Normal.Z + .5,
+		}
 	}
 	unit := r.Direction.Unit()
-	t = 0.5 * (unit.Y + 1.0)
+	t := 0.5 * (unit.Y + 1.0)
 	return Color{1, 1, 1}.Blend(t, Color{0.5, 0.7, 1})
 }
 
@@ -40,6 +30,10 @@ func main() {
 	const aspectRatio = 16. / 9.
 	const imageWidth = 400
 	imageHeight := int(math.Round(imageWidth / aspectRatio))
+
+	var world []Hitter
+	world = append(world, Sphere{Point{0, 0, -1}, 0.5})
+	world = append(world, Sphere{Point{0, -100.5, -1}, 100})
 
 	const viewportHeight = 2
 	const viewportWidth = 2 * aspectRatio
@@ -59,7 +53,7 @@ func main() {
 			u := float64(i) / (imageWidth - 1)
 			v := float64(j) / float64(imageHeight-1)
 			ray := Ray{origin, lowerLeftCorner.Add(horizontal.Scale(u)).Add(vertical.Scale(v)).SubPoint(origin)}
-			img.Set(i, imageHeight-j-1, rayColor(ray).NRGBA())
+			img.Set(i, imageHeight-j-1, rayColor(ray, HitterSlice(world)).NRGBA())
 		}
 		bar.Add(1)
 	}
