@@ -45,6 +45,7 @@ func main() {
 	world = append(world, Sphere{Point{0.0, -100.5, -1.0}, 100.0, materialGround})
 	world = append(world, Sphere{Point{0.0, 0.0, -1.0}, 0.5, materialCenter})
 	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, 0.5, materialLeft})
+	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, -0.4, materialLeft})
 	world = append(world, Sphere{Point{1.0, 0.0, -1.0}, 0.5, materialRight})
 
 	camera := NewCamera(aspectRatio)
