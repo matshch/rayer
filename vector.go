@@ -42,3 +42,16 @@ func (a Vector) Sub(b Vector) Vector {
 func (v Vector) Dot(v2 Vector) float64 {
 	return v.X*v2.X + v.Y*v2.Y + v.Z*v2.Z
 }
+
+func RandomVector() Vector {
+	return Vector{Random(-1, 1), Random(-1, 1), Random(-1, 1)}
+}
+
+func RandomUnitSphereVector() Vector {
+	for {
+		v := RandomVector()
+		if v.LenSq() < 1 {
+			return v
+		}
+	}
+}

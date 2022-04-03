@@ -58,3 +58,12 @@ func (c *Color) blended() {
 		c.samples = 0
 	}
 }
+
+func (c Color) Scale(f float64) Color {
+	c.blended()
+	return Color{
+		R: f * c.R,
+		G: f * c.G,
+		B: f * c.B,
+	}
+}

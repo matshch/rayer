@@ -11,14 +11,14 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-func rayColor(r Ray, world Hitter) Color {
+func rayColor(r Ray, world Hitter, depth uint) Color {
+	if depth == 0 {
+		return Color{}
+	}
 	hit := world.Hit(r, 0, math.Inf(1))
 	if hit != nil {
-		return Color{
-			R: .5*hit.Normal.X + .5,
-			G: .5*hit.Normal.Y + .5,
-			B: .5*hit.Normal.Z + .5,
-		}
+		target := hit.Point.Add(hit.Normal).Add(RandomUnitSphereVector())
+		return rayColor(Ray{hit.Point, target.SubPoint(hit.Point)}, world, depth-1).Scale(.5)
 	}
 	unit := r.Direction.Unit()
 	t := 0.5 * (unit.Y + 1.0)
@@ -32,6 +32,7 @@ func main() {
 	const imageWidth = 400
 	imageHeight := int(math.Round(imageWidth / aspectRatio))
 	const samplesPerPixel = 100
+	const maxDepth = 50
 
 	var world []Hitter
 	world = append(world, Sphere{Point{0, 0, -1}, 0.5})
@@ -48,7 +49,7 @@ func main() {
 				u := (float64(i) + rand.Float64()) / (imageWidth - 1)
 				v := (float64(j) + rand.Float64()) / float64(imageHeight-1)
 				ray := camera.Ray(u, v)
-				color.LazyBlend(rayColor(ray, HitterSlice(world)))
+				color.LazyBlend(rayColor(ray, HitterSlice(world), maxDepth))
 			}
 			img.Set(i, imageHeight-j-1, color.NRGBA())
 		}
