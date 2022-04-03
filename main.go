@@ -2,10 +2,8 @@ package main
 
 import (
 	"image"
-	"image/color"
 	"image/png"
 	"log"
-	"math"
 	"os"
 
 	"github.com/schollz/progressbar/v3"
@@ -21,16 +19,13 @@ func main() {
 	bar := progressbar.Default(image_height)
 	for j := 0; j < image_height; j++ {
 		for i := 0; i < image_width; i++ {
-			r := float64(i) / (image_width - 1)
-			g := float64(j) / (image_height - 1)
-			const b = 0.25
+			c := Color{
+				R: float64(i) / (image_width - 1),
+				G: float64(j) / (image_height - 1),
+				B: 0.25,
+			}
 
-			img.Set(i, image_height - j - 1, color.NRGBA{
-				R: uint8(math.Round(math.MaxUint8 * r)),
-				G: uint8(math.Round(math.MaxUint8 * g)),
-				B: uint8(math.Round(math.MaxUint8 * b)),
-				A: 255,
-			})
+			img.Set(i, image_height - j - 1, c.NRGBA())
 		}
 		bar.Add(1)
 	}
