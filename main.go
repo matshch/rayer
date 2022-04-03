@@ -37,16 +37,12 @@ func main() {
 	const samplesPerPixel = 100
 	const maxDepth = 50
 
+	r := math.Cos(math.Pi/4)
 	var world []Hitter
-	materialGround := Lambertian{Color{R: 0.8, G: 0.8, B: 0.0}}
-	materialCenter := Lambertian{Color{R: 0.1, G: 0.2, B: 0.5}}
-	materialLeft := Dielectric{1.5}
-	materialRight := Metal{Color{R: 0.8, G: 0.6, B: 0.2}, 1.0}
-	world = append(world, Sphere{Point{0.0, -100.5, -1.0}, 100.0, materialGround})
-	world = append(world, Sphere{Point{0.0, 0.0, -1.0}, 0.5, materialCenter})
-	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, 0.5, materialLeft})
-	world = append(world, Sphere{Point{-1.0, 0.0, -1.0}, -0.4, materialLeft})
-	world = append(world, Sphere{Point{1.0, 0.0, -1.0}, 0.5, materialRight})
+	materialLeft := Lambertian{Color{R:0,G:0,B:1}}
+	materialRight := Lambertian{Color{R:1,G:0,B:0}}
+	world = append(world, Sphere{Point{-r, 0, -1}, r, materialLeft})
+	world = append(world, Sphere{Point{r, 0, -1}, r, materialRight})
 
 	camera := NewCamera(90, aspectRatio)
 
