@@ -17,7 +17,7 @@ func rayColor(r Ray, world Hitter, depth uint) Color {
 	}
 	hit := world.Hit(r, 0.001, math.Inf(1))
 	if hit != nil {
-		target := hit.Point.Add(hit.Normal).Add(RandomUnitSphereVector())
+		target := hit.Point.Add(hit.Normal).Add(RandomUnitVector())
 		return rayColor(Ray{hit.Point, target.SubPoint(hit.Point)}, world, depth-1).Scale(.5)
 	}
 	unit := r.Direction.Unit()

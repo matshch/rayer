@@ -55,3 +55,7 @@ func RandomUnitSphereVector() Vector {
 		}
 	}
 }
+
+func RandomUnitVector() Vector {
+	return RandomUnitSphereVector().Unit()
+}
